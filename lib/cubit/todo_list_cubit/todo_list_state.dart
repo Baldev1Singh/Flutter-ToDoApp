@@ -8,8 +8,8 @@ part of 'todo_list_cubit.dart';
   factory TodoListState.initial(){
      return TodoListState(todoList: [
        TodoModel(id: '1',desc: 'Clean the room'),
-       TodoModel(id: '1',desc: 'Wash the dish'),
-       TodoModel(id: '1',desc: 'Do Homework'),
+       TodoModel(id: '2',desc: 'Wash the dish'),
+       TodoModel(id: '3',desc: 'Do Homework'),
      ]);
    }
    
