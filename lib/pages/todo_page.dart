@@ -14,7 +14,7 @@ class TODOPage extends StatefulWidget {
 class _TODOPageState extends State<TODOPage> {
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       body: SingleChildScrollView(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 40),
         child: Column(
@@ -26,9 +26,11 @@ class _TODOPageState extends State<TODOPage> {
             ),
             SearchAndFilterToDo(),
             const ShowTodo(),
+
           ],
         ),
       ),
     );
   }
 }
+

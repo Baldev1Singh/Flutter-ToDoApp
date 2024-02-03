@@ -11,43 +11,65 @@ class ShowTodo extends StatelessWidget {
   Widget build(BuildContext context) {
     List<TodoModel> todo =
         context.watch<FilterTodoCubit>().state.filterTodoList;
-    return ListView.separated(
-      primary: true,
-      shrinkWrap: true,
-      itemCount: todo.length,
-      separatorBuilder: (context, index) => const Divider(color: Colors.grey),
-      itemBuilder: (context, index) => Dismissible(
-        key: ValueKey(todo[index].id),
-        onDismissed: (_) {
-          context.read<TodoListCubit>().removeToDO(todo[index]);
-        },
-        confirmDismiss: (_) {
-          return showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) {
-              return AlertDialog(
-                title: Text('Are you sure?'),
-                content: Text('Do you really want to delete?'),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context, false),
-                    child: Text('NO'),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.pop(context, true),
-                    child: Text('YES'),
-                  ),
-                ],
-              );
-            },
-          );
-        },
-        child: TodoItem(
-          todoItem: todo[index],
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<TodoListCubit, TodoListState>(listener: (context, state) {
+          context.read<FilterTodoCubit>().setFilteredTodo(
+              context.read<TodoFilterCubit>().state.todoFilter,
+              state.todoList,
+              context.read<TodoSearchCubit>().state.todo);
+        },),
+        BlocListener<TodoFilterCubit, TodoFilterState>(listener: (context, state) {
+          context.read<FilterTodoCubit>().setFilteredTodo(
+            state.todoFilter,
+              context.read<TodoListCubit>().state.todoList,
+              context.read<TodoSearchCubit>().state.todo);
+        },),
+        BlocListener<TodoSearchCubit, TodoSearchState>(listener: (context, state) {
+          context.read<FilterTodoCubit>().setFilteredTodo(
+              context.read<TodoFilterCubit>().state.todoFilter,
+              context.read<TodoListCubit>().state.todoList,
+              context.read<TodoSearchCubit>().state.todo);
+        },),
+      ],
+      child: ListView.separated(
+        primary: true,
+        shrinkWrap: true,
+        itemCount: todo.length,
+        separatorBuilder: (context, index) => const Divider(color: Colors.grey),
+        itemBuilder: (context, index) => Dismissible(
+          key: ValueKey(todo[index].id),
+          onDismissed: (_) {
+            context.read<TodoListCubit>().removeToDO(todo[index]);
+          },
+          confirmDismiss: (_) {
+            return showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text('Are you sure?'),
+                  content: Text('Do you really want to delete?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: Text('NO'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: Text('YES'),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+          child: TodoItem(
+            todoItem: todo[index],
+          ),
+          background: showBackground(0),
+          secondaryBackground: showBackground(1),
         ),
-        background: showBackground(0),
-        secondaryBackground: showBackground(1),
       ),
     );
   }
